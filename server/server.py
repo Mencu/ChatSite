@@ -4,7 +4,6 @@ import time
 from user import User
 
 # TODO: change encryption
-# TODO: find os for rasp server
 # TODO: deploy on raspberry pi
 
 

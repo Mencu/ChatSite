@@ -25,7 +25,7 @@ def create_app(test_config=None):
         print("[EXCEPTION OSERROR_mkdir_instancePath]", e)
 
     # a simple page that says hello
-    @app.route('/')
+    @app.route('/', methods = ['GET'])
     def index():
         return render_template('base.html')
 
