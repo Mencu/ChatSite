@@ -35,5 +35,5 @@ def create_app(test_config=None):
     return app
 
 if __name__ == '__main__':
-    app = create_app('test', '')
+    app = create_app()
     app.run(host='localhost', port=5000, debug=True)
