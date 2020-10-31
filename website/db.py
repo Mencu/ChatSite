@@ -6,6 +6,7 @@ from flask.cli import with_appcontext
 
 # To get and close the database
 def get_db():
+    """Parse database"""
     if 'db' not in g:
         g.db = sqlite3.connect(
             current_app.config['DATABASE'],
@@ -17,6 +18,7 @@ def get_db():
 
 
 def close_db(e=None):
+    """Close database"""
     db = g.pop('db', None)
 
     if db is not None:
@@ -27,6 +29,7 @@ def close_db(e=None):
 
 # Commands for initialization
 def init_db():
+    """Initializes database"""
     db = get_db()
 
     with current_app.open_resource('tables.sql') as f:

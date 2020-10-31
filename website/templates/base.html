@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Alin-Chat</title>
+    <meta charset="UTF-8">
+    <meta name="viewpoint" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+    {% block head %}{% endblock %}
+</head>
+<body>
+<img src="{{url_for('static', filename='puta_finala.png')}}" align="middle" height="480" width="1000"/>
+<h1>Certified Coaie Moment</h1>
+    {% block body %}{% endblock %}
+</body>
+</html>

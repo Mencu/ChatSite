@@ -1,6 +1,6 @@
 import os
 
-from flask import Flask
+from flask import Flask, render_template, url_for
 
 
 def create_app(test_config=None):
@@ -26,8 +26,8 @@ def create_app(test_config=None):
 
     # a simple page that says hello
     @app.route('/')
-    def hello():
-        return 'Hello, World!'
+    def index():
+        return render_template('base.html')
 
     from . import db
     db.init_app(app)
@@ -36,4 +36,4 @@ def create_app(test_config=None):
 
 if __name__ == '__main__':
     app = create_app('test', '')
-    app.run(host='0.0.0.0', port=5000, debug=True)
+    app.run(host='localhost', port=5000, debug=True)
