@@ -82,20 +82,21 @@ def get_messages():
 
 def update_messages():
     '''Gets and updates messages for the whole server'''
-    msgs = []
+
+    global messages
 
     while True:
 
         time.sleep(0.1)
         if not client: continue
         new_messages = client.get_messages()
-        msgs.extend(new_messages)
+        messages.extend(new_messages)
 
-        for msg in new_messages:
-            if msg == "exit":
+        for message in new_messages:
+            if message == "exit":
                 break
 
 
 if __name__ == '__main__':
+    Thread(target=update_messages).start()
     app.run(debug=True, adress='localhost', port='5000')
-    recv_thread = Thread(target=update_messages).start()

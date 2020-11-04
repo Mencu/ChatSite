@@ -1,25 +1,27 @@
 $(function() {
-    $('#sendButton').on('click', function() {
+    $('#sendButton').bind('click', function() {
       var message = document.getElementById('messageSend').value;
-      console.log(message);
-      $.getJSON('/run_messageSender', {val:message},
-      function(data) {
+      $.getJSON('/run_messageSender', 
+        {val:message},
+        function(data) {
       
+        });
+
+});
+
+window.addEventListener("load", function(){
+    var update_loop = setInterval(update, 100)
+    update();
+});
+
+function update() {
+  fetch('/get_messages')
+      .then(function (response) {
+          return response.text();
+      }).then(function (text) {
+          console.log("GET response text:");
+          console.log(text);
       });
       return false;
     });
-  });
-
-function validate(name){
-    if(name.length < 2 || name.length > 20){
-        return false
-    }
-    return true;
 }
-
-fetch('/get_messages').then(function(response){
-  return response.text();
-}).then(function(text){
-  console.log("GET response text:");
-  console.log(text);
-})
