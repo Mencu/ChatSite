@@ -1,79 +1,101 @@
 import os
 from datetime import timedelta
-from flask import Flask, render_template, url_for, redirect, session, request, send_from_directory
+from flask import Flask, render_template, url_for, redirect, session, request, send_from_directory, jsonify
+from threading import Thread
+import time
 
 from .client import Client
 
 NAME_KEY = 'name'
+client = None
+messages = []
 
-def create_app(test_config=None):
-    # create and configure the app
-    app = Flask(__name__, instance_relative_config=True)
+# create and configure the app
+app = Flask(__name__, instance_relative_config=True)
 
-    app.secret_key = 'hiandrei'
+app.secret_key = 'hiandrei'
 
-    app.config.from_mapping(
-        SECRET_KEY='dev',
-        DATABASE=os.path.join(app.instance_path, 'tables.sqlite'),
-    )
-
-    if test_config is None:
-        # load the instance config, if it exists, when not testing
-        app.config.from_pyfile('config.py', silent=True)
-    else:
-        # load the test config if passed in
-        app.config.from_mapping(test_config)
-
-    # ensure the instance folder exists
-    try:
-        os.makedirs(app.instance_path)
-    except OSError as e:
-        print("[EXCEPTION OSERROR_mkdir_instancePath]", e)
-
-    # Favicon
-    @app.route('/favicon.ico')
-    def favicon():
-        return send_from_directory(os.path.join(app.root_path, 'static'),'favicon.ico', mimetype='image/vnd.microsoft.icon')
+def disconnect():
+    '''To disconnect the client from the server
+    :return: None'''
     
-    # home page
-    @app.route('/home')
-    @app.route('/', methods = ['GET'])
-    def home():
-        if NAME_KEY not in session:
-           return redirect(url_for('login'))
+    global client
+    if client:
+        client.disconnect()
 
-        return render_template('index.html', **{"login":True, "session":session})
 
-    #background process for clicking
-    @app.route('/run', methods=['GET'])
-    def run(url=None):
-        message = request.args.get('val')
+# Favicon
+@app.route('/favicon.ico')
+def favicon():
+    return send_from_directory(os.path.join(app.root_path, 'static'), 'favicon.ico', mimetype='image/vnd.microsoft.icon')
 
-        print(message)
-        print("clicked")
-        
-        return ("nothing")
+# home page
+@app.route('/home')
+@app.route('/', methods=['GET'])
+def home():
+    global client
 
-    # login
-    @app.route('/login', methods = ['POST', 'GET'])
-    def login():
-        if request.method == "POST":
-            print(request.form)
-            session[NAME_KEY] = request.form["inputName"]
-            return redirect(url_for("home"))
-        return render_template('login.html', **{'session':session})
-
-    # logout
-    @app.route('/logout')
-    def logout():
-        session.pop(NAME_KEY, None)
+    if NAME_KEY not in session:
         return redirect(url_for('login'))
 
-    #from . import db
-    #db.init_app(app)
+    client = Client(session[NAME_KEY])
+    return render_template('index.html', **{"login": True, "session": session})
 
-    return app
+# background process for clicking
+@app.route('/run_messageSender', methods=['GET'])
+def run_messageSender(url=None):
+    global client
+
+    message = request.args.get('val')
+
+    if client != None:
+        client.send_message(message)
+
+    return 'none'
+
+# login
+@app.route('/login', methods=['POST', 'GET'])
+def login():
+    '''Main login page to login with name
+    :return: html template'''
+    global client
+    client.disconnect()
+
+    if request.method == "POST":
+        print(request.form)
+        session[NAME_KEY] = request.form["inputName"]
+        return redirect(url_for("home"))
+
+    return render_template('login.html', **{'session': session})
+
+# logout
+@app.route('/logout')
+def logout():
+    session.pop(NAME_KEY, None)
+
+    return redirect(url_for('login'))
+
+
+@app.route('/get_messages')
+def get_messages():
+    return jsonify({"messages":messages})
+
+def update_messages():
+    '''Gets and updates messages for the whole server'''
+    msgs = []
+
+    while True:
+
+        time.sleep(0.1)
+        if not client: continue
+        new_messages = client.get_messages()
+        msgs.extend(new_messages)
+
+        for msg in new_messages:
+            if msg == "exit":
+                break
+
 
 if __name__ == '__main__':
-    app = create_app()
-    app.run(host='localhost', port=5000, debug=True)
+    app.run(debug=True, adress='localhost', port='5000')
+    recv_thread = Thread(target=update_messages).start()

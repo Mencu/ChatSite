@@ -9,10 +9,10 @@ from user import User
 
 #Global constants
 HOST = 'localhost'
-PORT = 5000
+PORT = 5001
 ADDR = (HOST, PORT)
 MAX_CONNECTIONS = 24
-BUFSIZE = 1024
+BUFSIZE = 512
 
 #Global variables
 users = []

@@ -13,15 +13,12 @@
 
 <h1>Index</h1>
 
-
-    <div class="input-group mb-3">
-        <form>
-        <input type="text" class="form-control"  aria-label="Type here..." id="messageSend" placeholder="Type here..." id="message">
-        <div class="input-group-append">
-            <button id="sendButton" class="btn btn-primary" type="submit"> Send </button>
-        </div>
-        </form>
+<div class="input-group mb-3">
+    <input type="text" class="form-control"  aria-label="Type here..." id="messageSend" placeholder="Type here..." id="message">
+    <div class="input-group-append">
+        <button id="sendButton" class="btn btn-primary" type="submit"> Send </button>
     </div>
+</div>
 
-    <script type="text/javascript" src="{{ url_for('static', filename='js/index.js' )}}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='js/index.js' )}}"></script>
 {% endblock %}

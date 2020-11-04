@@ -2,7 +2,7 @@ $(function() {
     $('#sendButton').on('click', function() {
       var message = document.getElementById('messageSend').value;
       console.log(message);
-      $.getJSON('/run', {val:message},
+      $.getJSON('/run_messageSender', {val:message},
       function(data) {
       
       });
@@ -16,3 +16,10 @@ function validate(name){
     }
     return true;
 }
+
+fetch('/get_messages').then(function(response){
+  return response.text();
+}).then(function(text){
+  console.log("GET response text:");
+  console.log(text);
+})

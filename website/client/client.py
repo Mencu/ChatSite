@@ -7,7 +7,7 @@ class Client:
     for communication with server
     """
     HOST = 'localhost'
-    PORT = 5000
+    PORT = 5001
     ADDR = (HOST, PORT)
     BUFSIZE = 1024
 
