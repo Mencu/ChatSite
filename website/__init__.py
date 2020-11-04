@@ -45,9 +45,13 @@ def create_app(test_config=None):
         return render_template('index.html', **{"login":True, "session":session})
 
     #background process for clicking
-    @app.route('/run')
-    def run():
+    @app.route('/run', methods=['GET'])
+    def run(url=None):
+        message = request.args.get('val')
+
+        print(message)
         print("clicked")
+        
         return ("nothing")
 
     # login

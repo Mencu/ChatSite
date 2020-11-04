@@ -1,9 +1,10 @@
 $(function() {
-    $('#sendButton').on('click', function(e) {
-      e.preventDefault()
-      $.getJSON('/run', {value},
+    $('#sendButton').on('click', function() {
+      var message = document.getElementById('messageSend').value;
+      console.log(message);
+      $.getJSON('/run', {val:message},
       function(data) {
-          //value = document.getElementById("message").value
+      
       });
       return false;
     });
