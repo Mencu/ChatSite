@@ -4,7 +4,7 @@ from flask import Flask, render_template, url_for, redirect, session, request, s
 from threading import Thread
 import time
 
-from .client import Client
+from client import Client
 
 NAME_KEY = 'name'
 client = None
@@ -48,7 +48,7 @@ def run_messageSender(url=None):
 
     message = request.args.get('val')
 
-    if client != None:
+    if client:
         client.send_message(message)
 
     return 'none'
@@ -59,7 +59,8 @@ def login():
     '''Main login page to login with name
     :return: html template'''
     global client
-    client.disconnect()
+    if client is not None:
+        client.disconnect()
 
     if request.method == "POST":
         print(request.form)
@@ -93,10 +94,11 @@ def update_messages():
         messages.extend(new_messages)
 
         for message in new_messages:
+            print(message + '\n\n\n\n\n\n\n')
             if message == "exit":
                 break
 
 
 if __name__ == '__main__':
     Thread(target=update_messages).start()
-    app.run(debug=True, adress='localhost', port='5000')
+    app.run(debug=True)
